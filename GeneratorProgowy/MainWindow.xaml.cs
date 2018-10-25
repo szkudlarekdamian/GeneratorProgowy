@@ -18,7 +18,7 @@ namespace GeneratorProgowy
 
     public partial class MainWindow : Window
     {
-        private const int howMuchRegisters = 9,
+        private int howMuchRegisters = 3,
             maximumLengthOfRegister = 20,
             keyLength = 50000;
 
@@ -29,10 +29,7 @@ namespace GeneratorProgowy
 
         public MainWindow()
         {
-            MakeRegisters();
-            Console.WriteLine(GenerateKey());
-            InitializeComponent();
-            
+            InitializeComponent();   
         }
         #region Losowanie
         public static List<int> GenerateRandom(int count, int min, int max)
@@ -142,7 +139,6 @@ namespace GeneratorProgowy
                     suma += 1;
             }
             int modulo = suma % 2;
-            //WARTOŚĆ WYPCHNNIĘTA JEST WARTOŚCIĄ SPRAWDZANĄ PRZEZ WARUNEK PROGOWY? DAJEMY OSTATNIĄ A MOŻE PIERWSZA
             int pushedValue = int.Parse(register.Key.Last());
             List<String> temp = new List<String>();
             temp.Add(modulo.ToString());
