@@ -12,20 +12,34 @@
         <TabItem Header="Szyfrowanie i deszyfrowanie">
             <Grid Background="#21232C" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-                <StackPanel Background="MistyRose" HorizontalAlignment="Left" Height="523" Margin="10,10" VerticalAlignment="Top" Width="768">
-                    <StackPanel>
-                        <TextBlock x:Name="cipherTitle" Margin="15,10,15,0"  TextWrapping="Wrap" VerticalAlignment="Top" FontSize="24" FontFamily="Helvetica" FontWeight="Light" Width="196" Text="Generator Progowy"/>
-                        <Border BorderBrush="Black" BorderThickness="0,1,0,0" Margin="15,8" />
-                        <WrapPanel Margin="10 0">
-                            <TextBlock FontSize="14" FontWeight="DemiBold" Foreground="Black" Text="Ile rejestrów wygenerować?" />
-                            <ComboBox Background="Azure" x:Name="comboBox" Margin="30 0" FontSize="12" Width="40" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                                <ComboBoxItem Background="Linen" IsSelected="True">3</ComboBoxItem>
-                                <ComboBoxItem Background="Azure">5</ComboBoxItem>
-                                <ComboBoxItem Background="Lavender">7</ComboBoxItem>
-                                <ComboBoxItem Background="LemonChiffon">9</ComboBoxItem>
-                            </ComboBox>
-                        </WrapPanel>
-                    </StackPanel>
+                <StackPanel Background="MistyRose" HorizontalAlignment="Left" Height="523" Margin="10" VerticalAlignment="Top" Width="780">
+
+                    <TextBlock x:Name="cipherTitle" Margin="15,10,15,0"  TextWrapping="Wrap" VerticalAlignment="Top" FontSize="24" FontFamily="Helvetica" FontWeight="Light" Width="196" Text="Generator Progowy"/>
+                    <Border BorderBrush="Black" BorderThickness="0,1,0,0" Margin="15,8" />
+                    <WrapPanel>
+                        <StackPanel Width="370" Margin="10 60 10 10" HorizontalAlignment="Left">
+                            <WrapPanel Margin="10 10">
+                                <TextBlock FontSize="14" FontWeight="DemiBold" Foreground="Black" Text="Ile rejestrów wygenerować?" />
+                                <ComboBox Background="Azure" x:Name="comboBox" Margin="30 0" FontSize="12" Width="40" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                                    <ComboBoxItem Background="Linen" IsSelected="True">3</ComboBoxItem>
+                                    <ComboBoxItem Background="Azure">5</ComboBoxItem>
+                                    <ComboBoxItem Background="Lavender">7</ComboBoxItem>
+                                    <ComboBoxItem Background="LemonChiffon">9</ComboBoxItem>
+                                </ComboBox>
+                            </WrapPanel>
+                            <DockPanel Margin="10 10">
+                                <TextBlock FontSize="14" FontWeight="DemiBold" Foreground="Black" Text="Maksymalna długość rejestru: " />
+                                <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding ElementName=slValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right"  Width="40" />
+                                <Slider Maximum="30" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="slValue" />
+                            </DockPanel>
+                        </StackPanel>
+                        <StackPanel Width="370" Margin="10 60 10 10" HorizontalAlignment="Right">
+                            <WrapPanel Margin="10 0">
+                                <TextBlock FontSize="14" FontWeight="DemiBold" Foreground="Black" Text="Ile rejestrów wygenerować?" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </WrapPanel>
+
                     <!--<StackPanel x:Name="cipherTextBoxStackPanel" Margin="0 25" >
                         <Label x:Name="cipherTextBoxLabel" Margin="8,0,10,0" Target="{Binding ElementName=cipherTextBox}" Content="Tekst do zaszyfrowania" />
                         <TextBox x:Name="cipherTextBox" MaxHeight="150" MinHeight="30" VerticalScrollBarVisibility="Auto"  AcceptsReturn="True" Background="#21232C" Foreground="#E4DFDA" Height="Auto" Padding="6" Margin="10,0,10,5" TextWrapping="Wrap" FontSize="12" Text="" />
@@ -37,7 +51,7 @@
                     </StackPanel>-->
 
                 </StackPanel>
-               </Grid>
+            </Grid>
         </TabItem>
         <TabItem Header="Pomoc">
             <ScrollViewer>
