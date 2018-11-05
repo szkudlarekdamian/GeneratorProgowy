@@ -28,15 +28,17 @@ namespace GeneratorProgowy
         private static Random random = new Random();
         private List<int> registersLengths = new List<int>();
         private List<KeyValuePair<List<String>, List<String>>> registers = new List<KeyValuePair<List<String>, List<String>>>();
+        private List<KeyValuePair<List<String>, List<String>>> registersStepByStep = new List<KeyValuePair<List<String>, List<String>>>();
         private List<KeyValuePair<List<String>, List<String>>> registersBackup = new List<KeyValuePair<List<String>, List<String>>>();
         private List<KeyValuePair<short, List<String>>> perfectPolynomians = new List<KeyValuePair<short, List<String>>>();
+        private String helpText = "Autor: Damian Szkudlarek\nRodzaj generatora: Generator progowy\n\nZasada działania generatora progowego opiera się na wspólnej pracy, nieparzystej liczby rejestrów LSFR.\nPrzykład działania:\nZałóżmy że mamy 3 rejestry o różnej długości.W każdej iteracji bity rejestrów przesuwane są o jeden w prawo, tak, że ostatni bit zostaje wypchnięty, a na miejsce pierwszego dostaje się reszta z dzielenia przez dwa wyniku mnożenia rejestru z wielomianem.\nW kolejnym kroku należy zliczyć ile rejestrów wypchnęło bit prawdy. Jeśli suma ta przekracza połowę ilości rejestrów to do klucza dodajemy 1, w przeciwnym przypadku 0.\nWizualizacja przykładu działania generatora znajduje się w zakładce Krok po kroku\n\nWażne!\nGdy długości rejestrów są względnie pierwsze,a wielomiany gałęzi sprzężenia zwrotnego pierwotne, to okres tego generatora jest maksymalny.\nSzum generatora można zauważyć przy długości rejestrów powyżej 10. Wcześniej zauważyć można powatarzający się wzór.\n\n\nFunkcje programu:\n\t-Generowanie rejestrów LSFR,\n\t\t*Ręczne ustawienie parametrów:\n\t\t\t>Liczba rejestrów do wygenerowania,\n\t\t\t>Maksymalna długość pojedynczego rejestru,\n\t\t\t>Wybór pomiędzy losowymi wielomianami, a pierwotnymi*,\n\t-Wizualizacja rejestrów(x) i ich wielomianów(a),\n\t-Wybór długości klucza do wygenerowania,\n\t-Przycisk STOP, przerywający generowanie klucza,\n\t-Pomiar liczby wygenerowanych znaków oraz czasu, w jakim się to stało,\n\t-Zapis wygenerowanego klucza do pliku tekstowego lub binarnego,\n\t-Zapis rejestrów do pliku\n\t-Wczytanie rejestrów z pliku\n\n*Pierwotne wielomiany przedstawione zostały w dodatku w książce Schneier B. Kryptografia dla praktyków\n\n\nUwagi odnośnie programu:\n\t-Generowanie rejestrów nie wykonuje się automatycznie. Po zmianie parametrów należy każdorazowo wcisnąć przycisk Generuj rejestry.\n\t-Program obsługuje tylko pliki tekstowe i binarne.\n\t-Maksymalna długość rejestru została ograniczona w celach prezentacyjnych.\n\t-W programie rejestr i wielomian mają taką samą długość, dodatkowa jedynka przed wielomianem nie wpływa na obliczenia i ma funkcję tylko symboliczną.\n\t-Przy wczytaniu rejestrów z pliku:\n\t\t*Jeśli długość rejestru i wielomianu różni się lub wielomian nie został podany, to wielomian zostaje zastąpiony odpowiadającym długości rejestru, wielomianem pierwotnym.\n\t\t*Jeśli w rejestrze znajdują się same zera, to ostatnie zero zostaje zamienione na jedynkę.\n\t\t*Jeśli w wielomianie najstarszy bit nie jest jedynką to zostaje zamieniony na jedynkę.\n\t\t*Linie pliku, które nie zostały zapisane w odpowiednim formacie zostają pominięte.\n\t\t*Jeśli w pliku zapisano mniej niż 3 poprawne rejestry, lub parzystą liczbę poprawnych rejestrów to wczytywanie zakończy się niepowodzeniem.\n\t\t*Jeśli w pliku dwa rejestry mają taką samą długość to wczytywanie pliku zakończy się niepowodzeniem.\n\nPrzykład obsługi programu - generowanie rejestrów\nKrok 1.\n\tWybierz liczbę rejestrów do wygenerowania.\nKrok 2.\n\tWybierz maksymalną długość rejestru.\nKrok 3.\n\tWybierz rodzaj wielomianu, preferowany Pierwotne.\nKrok 4. \n\tNaciśnij przycisk Generuj rejestry.\n\n\n\n\nPrzykład obsługi programu - generowanie klucza \nKrok 1.\n\tGdy wygenerowano lub wczytano już rejestry, należy wpisać długość klucza.\nKrok 2.\n\tNaciśnij przycisk Generuj klucz.\nKrok 3.\n\tJeśli generowanie klucza trwa za długo, wciśnij przycisk STOP - przerwie to pracę generatora i wyświetli obok część klucza.\nKrok 4. \n\tZapisz klucz do pliku.\nKrok 5.\n\tZapisz rejestry do pliku.\n\n\n\n\nPrzykład obsługi programu - wczytanie rejestów\nKrok 1.\n\tNaciśnij przycisk Wczytaj rejestry.\nKrok 2.\n\tWybierz plik do wczytania. Plik powinien być zapisany w odpowiednim formacie 'rejestr; wielomian' - taki jak przy zapisie rejestrów do pliku.\nKrok 3.\n\tObejrzyj rejestry poniżej.\n";
 
 
         public MainWindow()
         {
             CreatePerfectPolynomians();
             InitializeComponent();
-
+            help.Text = helpText;
         }
         #region Losowanie
         public static List<int> GenerateRandom(int count, int min, int max)
@@ -168,7 +170,6 @@ namespace GeneratorProgowy
             registersLengths.Clear();
             for (int i = 0; i < howMuchRegisters; i++)
                 registers.Add(CreateRegister());
-            //registersBackup = registers.Select(y => y).ToList();
             registersBackup = CopyList(registers);
             
         }
@@ -178,7 +179,10 @@ namespace GeneratorProgowy
 
         private List<KeyValuePair<List<string>, List<string>>> CopyList(List<KeyValuePair<List<string>, List<string>>> list)
         {
-            return list.ConvertAll(kvp => new KeyValuePair<List<string>, List<string>>(kvp.Key, kvp.Value));
+            List<KeyValuePair<List<string>, List<string>>> temp = new List<KeyValuePair<List<string>, List<string>>>();
+            for(int i = 0; i < list.Count(); i++)
+                temp.Add(new KeyValuePair<List<string>, List<string>>(list[i].Key.ToList(), list[i].Value.ToList()));
+            return temp;
         }
 
         #endregion
@@ -259,7 +263,7 @@ namespace GeneratorProgowy
 
         private void keyLengthTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            keyLengthTextBox.Text = string.Concat(keyLengthTextBox.Text.Where(x => char.IsDigit(x)).Select(x => x));
+            ((TextBox)sender).Text = string.Concat(((TextBox)sender).Text.Where(x => char.IsDigit(x)).Select(x => x));
         }
 
         private void maximumLengthOfRegisterTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -345,13 +349,26 @@ namespace GeneratorProgowy
         {
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
             {
-                DefaultExt = ".txt",
-                Filter = "Pliki tekstowe (.txt)|*.txt"
+                DefaultExt = ".bin",
+                Filter = "Pliki binarne (.bin)|.bin|Pliki tekstowe (.txt)|*.txt"
             };
 
             Nullable<bool> result = dlg.ShowDialog();
             if (result == true && keyGlobal != "")
-                File.WriteAllText(dlg.FileName, keyGlobal, Encoding.GetEncoding("Windows-1250"));
+            {
+                if(dlg.FileName.Substring(dlg.FileName.Length - 3, 3) == "txt")
+                    File.WriteAllText(dlg.FileName, keyGlobal, Encoding.GetEncoding("Windows-1250"));
+                else
+                {
+                    int numOfBytes = keyGlobal.Length / 8;
+                    byte[] bytes = new byte[numOfBytes];
+                    for (int i = 0; i < numOfBytes; ++i)
+                    {
+                        bytes[i] = Convert.ToByte(keyGlobal.Substring(8 * i, 8), 2);
+                    }
+                    File.WriteAllBytes(dlg.FileName, bytes);
+                }
+            }
             else
                 showAlert("Błąd przy zapisie do pliku.");
         }
@@ -389,23 +406,40 @@ namespace GeneratorProgowy
                 String[] xa;
                 String x, a;
                 List<String> aL = new List<String>(), xL = new List<String>();
-                List<KeyValuePair<List<String>, List<String>>> registersTemp = new List<KeyValuePair<List<string>, List<string>>>();
-                registers.Clear();
-                registersBackup.Clear();
+                System.Text.RegularExpressions.Regex _regex = new System.Text.RegularExpressions.Regex("[0-1]+;[0-1]*");
                 var lines = File.ReadLines(dlg.FileName);
-
+                if (lines.Count() % 2 == 0 || lines.Count() < 3) { showAlert("Parzysta lub mniejsza niż trzy liczba rejestrów."); return; }
+                registers.Clear();
+                int validLines = 0;
+                List<short> lengths = new List<short>();
+                
                 foreach(var line in lines)
                 {
+                    if (!_regex.IsMatch(line)) continue;
                     xa = line.Split(';');
                     x = xa[0];
                     a = xa[1];
-                    if (!a.Last().Equals('1')) { a.Remove(a.Length - 1, 0); a += '1'; }
-                    if (!x.Contains('0')) { x.Remove(0, 1); x += '1'; }
-                    if (a == "") aL = perfectPolynomians.Where(z => z.Key == x.Length).Select(y => y.Value).ToList()[0];
-                    else aL = a.Select(y => y.ToString()).ToList();
+                    if (lengths.Contains((short)x.Length)) {
+                        registers = CopyList(registersBackup);
+                        showAlert("Rejestry o takiej samej długości.");
+                        return;
+                    }
+                    else lengths.Add((short)x.Length);
+                    
+                    if (!x.Contains('1')) { x.Remove(0, 1); x += '1'; }
+                    if (a == "" || a.Length != x.Length) aL = perfectPolynomians.Where(z => z.Key == x.Length).Select(y => y.Value).ToList()[0];
+                    else { if (!a.Last().Equals('1')) { a.Remove(a.Length - 1, 0); a += '1'; } aL = a.Select(y => y.ToString()).ToList(); }
                     xL = x.Select(y => y.ToString()).ToList();
                     registers.Add(new KeyValuePair<List<string>, List<string>>(xL, aL));
+
+                    validLines++;
                 }
+                if (validLines % 2 == 0 || validLines < 3) {
+                    registers = CopyList(registersBackup);
+                    showAlert("Parzysta lub mniejsza niż trzy liczba POPRAWNYCH rejestrów.");
+                    return;
+                }
+                registersBackup.Clear();
                 registersBackup = CopyList(registers);
                 fillTheRegistersStackPanel();
                 keyLengthWrapPanel.Visibility = Visibility.Visible;
@@ -413,10 +447,123 @@ namespace GeneratorProgowy
             }
         }
 
+        private void b1_Click(object sender, RoutedEventArgs e)
+        {
+            if (!t1a.Text.Contains("1") || !t1b.Text.Contains("1") || !t1c.Text.Contains("1"))
+            {
+                String message = "Rejestr numer: { ";
+                if (!t1a.Text.Contains("1")) message += "1 ";
+                if (!t1b.Text.Contains("1")) message += "2 ";
+                if (!t1c.Text.Contains("1")) message += "3 ";
+                message += "} zawiera same zera lub jest pusty.";
+                showAlert(message);
+                return;
+            }
+            else if (t1a.Text.Length == 3 && t1b.Text.Length == 4 && t1c.Text.Length == 5)
+            {
+                registersStepByStep.Clear();
+                registersStepByStep.Add(new KeyValuePair<List<string>, List<string>>(t1a.Text.Select(x => x.ToString()).ToList(), perfectPolynomians.Where(x => x.Key == t1a.Text.Count()).Select(x => x.Value).ToList()[0]));
+                registersStepByStep.Add(new KeyValuePair<List<string>, List<string>>(t1b.Text.Select(x => x.ToString()).ToList(), perfectPolynomians.Where(x => x.Key == t1b.Text.Count()).Select(x => x.Value).ToList()[0]));
+                registersStepByStep.Add(new KeyValuePair<List<string>, List<string>>(t1c.Text.Select(x => x.ToString()).ToList(), perfectPolynomians.Where(x => x.Key == t1c.Text.Count()).Select(x => x.Value).ToList()[0]));
+                fillTheRegistersStepByStepStackPanel();
+                sp2.Visibility = Visibility.Visible;
+            }
+            else
+                showAlert("Wprowadzono niepełną ilość bitów.");
+            
+        }
+
+        private void b2_Click(object sender, RoutedEventArgs e)
+        {
+            int sum = 0;
+            int count = registersStepByStep.Count;
+            int countDivided = count / 2;
+            for (int j = 0; j < count; j++)
+            {
+                var temp = registersStepByStep[j];
+                sum += IterateOverRegister(ref temp);
+                registersStepByStep[j] = temp;
+            }
+            if (sum > countDivided) stepByStepKeyTextBox.Text += "1";
+            else stepByStepKeyTextBox.Text += "0";
+            fillTheRegistersStepByStepStackPanel();
+
+        }
+
+        private void fillTheRegistersStepByStepStackPanel()
+        {
+            generatedRegistersStackPanelStepByStep.Children.Clear();
+
+            int i = 1;
+            short j = 0;
+            short sum = 0;
+
+            foreach (var register in registersStepByStep)
+            {
+                sum = 0;
+                StackPanel stack = new StackPanel { Margin = new Thickness(0, 2, 0, 2) };
+                WrapPanel wrapX = new WrapPanel {  Margin = new Thickness(0, 2, 0, 0) };
+                WrapPanel wrapA = new WrapPanel {  Margin = new Thickness(0, 2, 0, 0) };
+                stack.Children.Add(new Label { Content = "LFSR " + i.ToString(), Margin = new Thickness(0, 0, 0, 0), FontWeight = FontWeights.DemiBold });
+                wrapX.Children.Add(new Label { Content = "x:", Margin = new Thickness(0, 0, 23, 0) });
+                wrapA.Children.Add(new Label { Content = "a:", Margin = new Thickness(0, 0, 0, 0) });
+                wrapA.Children.Add(new TextBox { Margin = new Thickness(3, 0, 0, 0), FontSize = 14, Text = "1", Width = 20, Height = 20, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = true });
+
+                List<short> turnedOn = new List<short>();
+
+                foreach (var ai in register.Value)
+                {
+                    if (ai == "1")
+                    {
+                        wrapA.Children.Add(new TextBox { Background = Brushes.Yellow, Margin = new Thickness(3, 0, 0, 0), FontSize = 14, Text = ai, Width = 20, Height = 20, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = true });
+                        turnedOn.Add(j);
+                    }
+                    else wrapA.Children.Add(new TextBox { Margin = new Thickness(3, 0, 0, 0), FontSize = 14, Text = ai, Width = 20, Height = 20, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = true });
+                    j++;
+                }
+                j = 0;
+                foreach (var xi in register.Key)
+                {
+                    if(turnedOn.Contains(j)) wrapX.Children.Add(new TextBox { Background = Brushes.Yellow, Margin = new Thickness(3, 0, 0, 0), FontSize = 14, Text = xi, Width = 20, Height = 20, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = true });
+                    else wrapX.Children.Add(new TextBox { Margin = new Thickness(3, 0, 0, 0), FontSize = 14, Text = xi, Width = 20, Height = 20, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = true });
+                    j++;
+                }
+                j = 0;
+                i++;
+                
+                for (int p = 0; p < register.Key.Count; p++)
+                {
+                    if (register.Key[p] == "1" && register.Value[p] == "1")
+                        sum += 1;
+                }
+
+                ((TextBox)wrapX.Children[wrapX.Children.Count-1]).Background = Brushes.PeachPuff;
+                wrapX.Children.Add(new Label { Content = " Wypchnięty bit:", Margin = new Thickness(25+(46-((i-1)*23)), 0, 0, 0) });
+                wrapX.Children.Add(new TextBox { Margin = new Thickness(3, 0, 0, 0), Background = Brushes.PeachPuff, FontSize = 14, Text = ((TextBox)wrapX.Children[wrapX.Children.Count - 2]).Text, Width = 20, Height = 20, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = true });
+
+                wrapA.Children.Add(new Label { Content = " XOR:", Margin = new Thickness(25 + (46 - ((i - 1) * 23)), 0, 0, 0) });
+                wrapA.Children.Add(new TextBox { Margin = new Thickness(3, 0, 0, 0), FontSize = 14, Text = sum+"%2", Width = 40, Height = 20, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = true });
+                wrapA.Children.Add(new Label { Content = " W następnej iteracji dodany zostanie bit:", Margin = new Thickness(5, 0, 0, 0) });
+                wrapA.Children.Add(new TextBox { Margin = new Thickness(3, 0, 0, 0), FontSize = 14, Text = (sum%2).ToString(), Width = 20, Height = 20, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, IsReadOnly = true });
+
+
+                stack.Children.Add(wrapX);
+                stack.Children.Add(wrapA);
+                stack.Children.Add(new Border { BorderBrush = Brushes.Black, BorderThickness = new Thickness(0, 1, 0, 0), Margin = new Thickness(15, 2, 15, 2) });
+                generatedRegistersStackPanelStepByStep.Children.Add(stack);
+            }
+        }
+
+        private void t1a_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ((TextBox)sender).Text = string.Concat(((TextBox)sender).Text.Where(x => x == '0' || x=='1').Select(x => x));
+        }
+
         private void generateKeyBtn_Click(object sender, RoutedEventArgs e)
         {
             if (keyLengthTextBox.Text != "")
             {
+                if (int.Parse(keyLengthTextBox.Text) % 8 != 0) { keyLengthTextBox.Text = (int.Parse(keyLengthTextBox.Text) + 8-int.Parse(keyLengthTextBox.Text) % 8).ToString(); }
                 keyTextBox.Text = "";
                 counter.Text = "0";
                 time.Text = "0m 0s 0ms";

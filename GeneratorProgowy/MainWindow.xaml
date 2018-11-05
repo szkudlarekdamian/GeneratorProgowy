@@ -40,7 +40,7 @@
                                 <Button Width="182.5" x:Name="generateRegisters" Click="generateRegisters_Click"  Background="Azure" Margin="0,0,5,0" Height="32" Content="Generuj rejestry"/>
                                 <Button Width="182.5" x:Name="loadRegisters" Click="loadRegisters_Click"  Background="AliceBlue" Height="32" Content="Wczytaj rejestry"/>
                             </WrapPanel>
-                            <ScrollViewer  Margin="0 10 0 10" MaxHeight="150" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+                            <ScrollViewer  Margin="0 10 0 10" MaxHeight="170" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
                                 <StackPanel x:Name="generatedRegistersStackPanel"></StackPanel>
                             </ScrollViewer>
                             <WrapPanel Margin="10 10" x:Name="keyLengthWrapPanel" Visibility="Collapsed">
@@ -66,16 +66,6 @@
                         </StackPanel>
                     </WrapPanel>
 
-                    <!--<StackPanel x:Name="cipherTextBoxStackPanel" Margin="0 25" >
-                        <Label x:Name="cipherTextBoxLabel" Margin="8,0,10,0" Target="{Binding ElementName=cipherTextBox}" Content="Tekst do zaszyfrowania" />
-                        <TextBox x:Name="cipherTextBox" MaxHeight="150" MinHeight="30" VerticalScrollBarVisibility="Auto"  AcceptsReturn="True" Background="#21232C" Foreground="#E4DFDA" Height="Auto" Padding="6" Margin="10,0,10,5" TextWrapping="Wrap" FontSize="12" Text="" />
-                        <WrapPanel HorizontalAlignment="Center">
-                            <Button x:Name="cipherTextBoxButton" Width="112" Click="cipherTextBoxButton_Click"  Background="#E4DFDA" Margin="10,0,0,5" Height="32" Content="Szyfruj tekst"/>
-                            <Button x:Name="cipherTextBoxTextSaveButton" Click="cipherTextBoxTextSaveButton_Click"  Background="#E4DFDA" Margin="1,0,1,5" Height="32" Content="Zapisz tekst do pliku" Width="117"/>
-                            <Button x:Name="cipherTextBoxTableSaveButton" Click="cipherTextBoxTableSaveButton_Click"  Background="#E4DFDA" Margin="0,0,10,5" Height="32" Content="Zapisz tablicę do pliku" Width="126"/>
-                        </WrapPanel>
-                    </StackPanel>-->
-
                 </StackPanel>
             </Grid>
         </TabItem>
@@ -84,36 +74,33 @@
                 <TextBox x:Name="help" FontSize="12" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True"/>
             </ScrollViewer>
         </TabItem>
-        <!--<TabItem Header="Krok po kroku">
+        <TabItem Header="Krok po kroku">
             <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <StackPanel x:Name="stepbystepStackPanel" >
                     <StackPanel  Margin="70 20">
-                        <TextBlock FontSize="14" Foreground="AntiqueWhite" Text="Wprowadź tekst do zaszyfrowania."/>
-                        <TextBox x:Name="t1"  Height="Auto"  MaxHeight="150" MinHeight="30" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" ></TextBox>
+                        <TextBlock FontSize="14" Foreground="AntiqueWhite" Text="Wprowadź zawartość rejestrów: kolejno 3, 4 i 5 bitów"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="t1a" Grid.Column="0" Text="101" Margin="0 5 10 5" TextChanged="t1a_TextChanged" MaxLength="3"  Height="Auto"  MinHeight="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                            <TextBox x:Name="t1b" Grid.Column="1" Text="0010" Margin="10 5 10 5" TextChanged="t1a_TextChanged" MaxLength="4"  Height="Auto"  MinHeight="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                            <TextBox x:Name="t1c" Grid.Column="2" Text="10111" Margin="10 5 0 5" TextChanged="t1a_TextChanged" MaxLength="5"  Height="Auto"  MinHeight="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                        </Grid>
                         <Button x:Name="b1" Content="Kolejny krok" Height="40" Click="b1_Click"/>
                     </StackPanel>
-                    <StackPanel Margin="70 10">
-                        <TextBlock FontSize="14" Foreground="AntiqueWhite" Text="Zliczanie liczby powtórzeń liter."/>
-                        <TextBox x:Name="t2" Height="Auto" AcceptsReturn="True" IsReadOnly="True" MaxHeight="150" MinHeight="30" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
-                        <Button x:Name="b2" Content="Kolejny krok" Height="40" Click="b2_Click"/>
+                    <StackPanel Margin="70 10" x:Name="sp2" Visibility="Collapsed">
+                        <TextBlock FontSize="14" Foreground="AntiqueWhite" Text="Przedstawienie rejestrów."/>
+                        <StackPanel Background="AntiqueWhite"  Margin="0 10 0 10" x:Name="generatedRegistersStackPanelStepByStep"></StackPanel>
+                        <Button x:Name="b2" Content="Kolejna iteracja" Height="40" Click="b2_Click"/>
+                        <TextBlock FontSize="13" Margin="0 10 0 0" Foreground="AntiqueWhite" Text="Jeśli więcej niż połowa rejestrów wypchnie 1 to do klucza dodana zostaje 1, w przeciwnym wypadku 0."/>
+                        <TextBox x:Name="stepByStepKeyTextBox" MaxHeight="100" MinHeight="30" VerticalScrollBarVisibility="Auto" IsReadOnly="True" AcceptsReturn="True" Background="AliceBlue" Foreground="Black" Padding="6" Margin="0,10,0,5" TextWrapping="Wrap" FontSize="12" Text=""></TextBox>
                     </StackPanel>
-                    <StackPanel  Margin="70 10">
-                        <TextBlock FontSize="14" Foreground="AntiqueWhite" Text="Sprawdzenie ile homofonów można przypisać do liter."/>
-                        <TextBox x:Name="t3"  IsReadOnly="True" AcceptsReturn="True" MaxHeight="150" MinHeight="30" VerticalScrollBarVisibility="Auto"></TextBox>
-                        <Button x:Name="b3" Content="Kolejny krok" Height="40" Click="b3_Click"/>
+                    
                     </StackPanel>
-                    <StackPanel  Margin="70 10">
-                        <TextBlock FontSize="14" Foreground="AntiqueWhite" Text="Przypisanie homofonów do liter."/>
-                        <TextBox x:Name="t4"  IsReadOnly="True" AcceptsReturn="True" MaxHeight="150" MinHeight="30" VerticalScrollBarVisibility="Auto"></TextBox>
-                        <Button x:Name="b4" Content="Kolejny krok" Height="40" Click="b4_Click"/>
-                    </StackPanel>
-                    <StackPanel  Margin="70 10">
-                        <TextBlock FontSize="14" Foreground="AntiqueWhite" Text="Szyfrowanie tekstu jawnego losowymi homofonami litery."/>
-                        <TextBox x:Name="t5" IsReadOnly="True" AcceptsReturn="True" MaxHeight="150" MinHeight="30" VerticalScrollBarVisibility="Auto" ></TextBox>
-                    </StackPanel>
-
-                </StackPanel>
             </ScrollViewer>
-        </TabItem>-->
+        </TabItem>
     </TabControl>
 </Window>
